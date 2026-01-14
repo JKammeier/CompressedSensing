@@ -35,8 +35,8 @@ end
 %% Sample image
 % C = eye(length(x));   % can be used to show sampling the full image
 
-Psi_inv = dftmtx(n);    % Image -> Fourier
-Psi = conj(Psi_inv)/n;  % Fourier -> Image
+Psi_inv = dctmtx(n);    % Image -> DCT space
+Psi = Psi_inv';  % DCT space -> Image
 Theta = C * Psi;
 
 y = C * double(x_original);  % This is the singel pixel camera taking the picture
