@@ -1,6 +1,8 @@
 # CompressedSensing
 A student project about compressed sensing.
 
+[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=JKammeier/CompressedSensing)
+
 # File Overview
 - [CS_demo.m](./CS_demo.m) currently the main file of the project
 - [printNorms.m](./printNorms.m) a utility to print norms of a vector to the console
