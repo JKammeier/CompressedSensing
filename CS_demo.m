@@ -32,10 +32,10 @@ function CS_demo()
     resultImg = reshape(x_hat,size(img));
     
     %% Show images
-    show_images(img, resultImg, Show_C_matrix*C);
+    showImages(img, resultImg, Show_C_matrix*C);
     
     %% Save workspace
-    save_workspace(img, n, p, C, s, x_hat);
+    save_workspace(img, n, p, C, s, x_hat, C_version, Psi_version, Optimization_version);
     
 end
 
@@ -101,23 +101,8 @@ function s = solve_L1_optimization(y, Theta, version)
 
 end
 
-function show_images(original, retransformed, C)
-    figure
-    
-    subplot(1,2,1);
-    imshow(original);
-    title("Original image");
-    subplot(1,2,2);
-    imshow(retransformed);
-    title("Retransformed image");
-    
-    if (C ~= 0)
-        figure
-        imshow(C)
-    end
-end
-
-function save_workspace(img, n, p, C, s, x_hat)
+function save_workspace(img, n, p, C, s, x_hat, C_version, Psi_version, Optimization_version)
+    % filename contains a timestamp to remove risk of overwriting data
     filename = sprintf('results_%d.mat',uint64(posixtime(datetime('now'))));
-    save(filename,'img', 'n', 'p', 'C', 's', 'x_hat');
+    save(filename,'img', 'n', 'p', 'C', 's', 'x_hat', 'C_version', 'Psi_version', 'Optimization_version');
 end
