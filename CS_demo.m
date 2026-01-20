@@ -1,4 +1,4 @@
-_%% Preprocessing image and preparing demo
+%% Preprocessing image and preparing demo
 img = imread("cameraman.tif");
 img = imresize(img,0.25);    % downsample image to remove memory constraints
 x_original = img(:);
@@ -59,17 +59,22 @@ y = C * double(x_original);  % This is the singel pixel camera taking the pictur
 % y = Theta*s
 % --> find s from y and Theta while minimizing L1 norm
 % s = Theta\y;  % only works when sampling the entire image
-cvx_begin;
-    variable s(length(x_original));
-    minimize( norm(s,1) );
-    subject to
-        % Theta*s == y;
-        norm(Theta*s -y, 2) <= 1e-3
-cvx_end;
+% cvx_begin;
+%     variable s(length(x_original));
+%     minimize( norm(s,1) );
+%     subject to
+%         % Theta*s == y;
+%         norm(Theta*s -y, 2) <= 1e-3
+% cvx_end;
+
+% solve using l1-magic
+% initial guess = min energy
+s0 = Theta'*y;
+s = l1eq_pd(s0, Theta, [], y, 1e-3);
 
 %% Retransform to retrieve image
-x = real(Psi*s);
-resultImg = reshape(x,size(img));
+x_hat = uint8(real(Psi*s));
+resultImg = reshape(x_hat,size(img));
 
 %% show images
 figure
@@ -77,12 +82,14 @@ figure
 subplot(1,2,1);
 imshow(img);
 title("Original image");
-% subplot(1,3,2);
-% imshow(reshape(y,size(img))); % Doesn't work because multiple pixels get sampled into one value of y
-% title("Sampled image");
 subplot(1,2,2);
 imshow(resultImg);
 title("Retransformed image");
 
 figure
 imshow(C)
+
+%% save workspace
+% filename = sprintf('results_%s.mat',char(datetime('now','Format','yyyy-MM-dd''T''HH:mm:ss')));
+filename = sprintf('results_%d.mat',uint64(posixtime(datetime('now'))));
+save(filename,'img', 'n', 'p', 'C', 's', 'x_hat');
