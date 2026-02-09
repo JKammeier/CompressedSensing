@@ -1,19 +1,23 @@
-function CS_demo()
+function [difference_l2, s] = CS_demo(pFactor, C_version, C_probability, Psi_version, Optimization_version, Show_C_matrix, Show_s_histogram, fileNameEnd)
+    % pFactor - p = n*pFactor (Factor between original image vector length n and number of CS measurements p)
+    % C_version - 0: Set prob. for each element to be one; 1: one random one per row; 2: roughly identity matrix
+    % C_probability - Probability used in C creation
+    % Psi_version - 0: DCT; 1: DFT
+    % Optimization_version - 0: l1-magic; 1: cvx
+    % Show_C_matrix - boolean
+    % Show_s_histogram - boolean
+
     %% Preprocess image and prepare demo
     img = imread("cameraman.tif");
     img = imresize(img,0.25);    % downsample image to remove memory constraints
-    x_original = img(:);
+    x_original = img(:);    % This is now ground truth (img: matrix, x_original: vector)
     
     % Define variables
     n = length(x_original);
-    p = round(n * 0.5);  % p = length(y)
-    C_version = 0.2;  % <1: this prob. for each element; 1: one random one per row; 2: roughly identity matrix
-    Psi_version = 0; % 0: DCT; 1: DFT
-    Optimization_version = 0; % 0: l1-magic; 1: cvx
-    Show_C_matrix = 0;  % 0: don't show; 1: show
+    p = round(n * pFactor);  % p = length(y)
 
     %% Create sampling matrix C
-    C = create_C(n, p, C_version);   % Choose the method of creating C
+    C = create_C(n, p, C_version, C_probability);   % Choose the method of creating C
     
     %% Sample image
     
@@ -26,23 +30,30 @@ function CS_demo()
     %% Solve underdetermined system of equations with L1 optimization
     
     s = solve_L1_optimization(y, Theta, Optimization_version);
+
+    % force s to be sparse
+    % s(abs(s)<1) = 0;
     
     %% Retransform to retrieve image
     x_hat = uint8(real(Psi*s));
     resultImg = reshape(x_hat,size(img));
     
     %% Show images
-    showImages(img, resultImg, Show_C_matrix*C);
-    
+    showImages(img, resultImg, Show_C_matrix*C, Show_s_histogram*s);
+
+    %% Print Norms
+    disp("s vector:");
+    printNorms(s);
+    disp("Distance between images:");
+    [~, ~, difference_l2] = printNorms(double(img-resultImg));
+
     %% Save workspace
-    save_workspace(img, n, p, C, s, x_hat, C_version, Psi_version, Optimization_version);
-    
+    save_workspace(img, resultImg, n, p, C, s, x_hat, C_version, Psi_version, Optimization_version, fileNameEnd);
 end
 
-function C = create_C(n, p, version)
-    if (version >= 0 && version < 1)   % Set probability for each entry
-        pixelProbability = version; % probability of a pixel in C being one
-        C = rand(p,n) <= pixelProbability;  % multiple pixels per sample possible
+function C = create_C(n, p, version, probability)
+    if (version == 0)   % Set probability for each entry
+        C = rand(p,n) <= probability;  % multiple pixels per sample possible
     elseif (version == 1)   % One random column per row
         C = zeros(p,n);
         for i = 1:p
@@ -72,7 +83,7 @@ end
 function [Psi, Psi_inv] = create_Psi(n, version)
     if (version == 0)   % Discrete Cosine Transform
         Psi_inv = dctmtx(n);
-            Psi = Psi_inv';
+        Psi = Psi_inv';
     elseif (version == 1)   % Discrete Fourier Transform
         Psi_inv = dftmtx(n);
         Psi = conj(Psi_inv)/n;
@@ -84,16 +95,17 @@ end
 % y = Theta*s
 % --> find s from y and Theta while minimizing L1 norm
 function s = solve_L1_optimization(y, Theta, version)
+    maxError = 1e-3;
     if (version == 0)   % l1-magic
         s0 = Theta'*y;
-        s = l1eq_pd(s0, Theta, [], y, 1e-3);
+        s = l1eq_pd(s0, Theta, [], y, maxError);
     elseif (version == 1)   % cvx
         cvx_begin;
-            variable s(length(x_original));
-            minimize( norm(s,1) );
+            variable s(length(Theta));
+            minimize( norm(s,2) );
             subject to
                 % Theta*s == y;
-                norm(Theta*s -y, 2) <= 1e-3
+                norm(Theta*s -y, 2) <= maxError;
         cvx_end;
     else
         disp("ERROR: Incorrect optimization implementation specified!")
@@ -101,8 +113,8 @@ function s = solve_L1_optimization(y, Theta, version)
 
 end
 
-function save_workspace(img, n, p, C, s, x_hat, C_version, Psi_version, Optimization_version)
+function save_workspace(img, resultImg, n, p, C, s, x_hat, C_version, Psi_version, Optimization_version, fileNameEnd)
     % filename contains a timestamp to remove risk of overwriting data
-    filename = sprintf('results_%d.mat',uint64(posixtime(datetime('now'))));
-    save(filename,'img', 'n', 'p', 'C', 's', 'x_hat', 'C_version', 'Psi_version', 'Optimization_version');
+    filename = sprintf('./results/results_%d_%s.mat', uint64(posixtime(datetime('now'))), fileNameEnd);
+    save(filename,'img', 'resultImg', 'n', 'p', 'C', 's', 'x_hat', 'C_version', 'Psi_version', 'Optimization_version');
 end
