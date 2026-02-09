@@ -48,7 +48,7 @@ function [difference_l2, s] = CS_demo(pFactor, C_version, C_probability, Psi_ver
     [~, ~, difference_l2] = printNorms(double(img-resultImg));
 
     %% Save workspace
-    save_workspace(img, resultImg, n, p, C, s, x_hat, C_version, Psi_version, Optimization_version, fileNameEnd);
+    save_workspace(img, n, p, C, s, x_hat, C_version, Psi_version, Optimization_version, fileNameEnd);
 end
 
 function C = create_C(n, p, version, probability)
@@ -113,8 +113,8 @@ function s = solve_L1_optimization(y, Theta, version)
 
 end
 
-function save_workspace(img, resultImg, n, p, C, s, x_hat, C_version, Psi_version, Optimization_version, fileNameEnd)
+function save_workspace(img, n, p, C, s, x_hat, C_version, Psi_version, Optimization_version, fileNameEnd)
     % filename contains a timestamp to remove risk of overwriting data
     filename = sprintf('./results/results_%d_%s.mat', uint64(posixtime(datetime('now'))), fileNameEnd);
-    save(filename,'img', 'resultImg', 'n', 'p', 'C', 's', 'x_hat', 'C_version', 'Psi_version', 'Optimization_version');
+    save(filename,'img', 'n', 'p', 'C', 's', 'x_hat', 'C_version', 'Psi_version', 'Optimization_version');
 end
