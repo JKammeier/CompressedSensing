@@ -4,8 +4,9 @@ A student project about compressed sensing.
 [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=JKammeier/CompressedSensing)
 
 # File Overview
-- [CS_demo.m](./CS_demo.m): currently the main script of the project
-- [printNorms.m](./printNorms.m): a utility to print norms of a vector to the console
+- [demonstrateSparsity.m](./demonstrateSparsity.m) and [runTest.m](./runTest.m): scripts to run predefined tests (they call CS_demo.m)
+- [CS_demo.m](./CS_demo.m): the main function of the project implementing CS
+- [printNorms.m](./printNorms.m): a utility to print norms of a vector/matrix to the console
 - [showImages.m](./showImages.m): creates a figure to show before/after images
 - [showResults.m](./showResults.m): loads and shows results from a .mat file
   - change the the filename at the beginning of the script to load your own .mat file
