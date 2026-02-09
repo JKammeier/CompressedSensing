@@ -17,10 +17,10 @@ function showImages(original, retransformed, C, s)
     if (nnz(s) ~= 0)
         figure
         subplot(1,2,1);
-        histogram(s,-50:0.001:50);
+        histogram(real(s),-50:0.001:50);
         title("Histogram of s (only showing area -50:50)");
         subplot(1,2,2);
-        plot(s);
+        plot(s, 'x');
         title("Values of s");
     end
 end
