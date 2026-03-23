@@ -1,4 +1,4 @@
-function [difference_l2, s] = CS_demo(pFactor, C_version, C_probability, Psi_version, Optimization_version, Show_C_matrix, Show_s_histogram, fileNameEnd)
+function [difference_l2, s, resultImg] = CS_demo(pFactor, C_version, C_probability, Psi_version, Optimization_version, Show_C_matrix, Show_s_histogram, fileNameEnd, sparsityCutoff)
     % pFactor - p = n*pFactor (Factor between original image vector length n and number of CS measurements p)
     % C_version - 0: Set prob. for each element to be one; 1: one random one per row; 2: roughly identity matrix
     % C_probability - Probability used in C creation
@@ -6,6 +6,9 @@ function [difference_l2, s] = CS_demo(pFactor, C_version, C_probability, Psi_ver
     % Optimization_version - 0: l1-magic; 1: cvx
     % Show_C_matrix - boolean
     % Show_s_histogram - boolean
+    % fileNameEnd - a suffix added to the filename (before the extension)
+    % sparsityCutoff - Absolute values lower than this will be set to 0 in
+    %                   s
 
     %% Preprocess image and prepare demo
     img = imread("cameraman.tif");
@@ -32,7 +35,7 @@ function [difference_l2, s] = CS_demo(pFactor, C_version, C_probability, Psi_ver
     s = solve_L1_optimization(y, Theta, Optimization_version);
 
     % force s to be sparse
-    % s(abs(s)<1) = 0;
+    s(abs(s) < sparsityCutoff) = 0;
     
     %% Retransform to retrieve image
     x_hat = uint8(real(Psi*s));
