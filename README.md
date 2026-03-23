@@ -4,7 +4,7 @@ A student project about compressed sensing.
 [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=JKammeier/CompressedSensing)
 
 # File Overview
-- [demonstrateSparsity.m](./demonstrateSparsity.m) and [runTest.m](./runTest.m): scripts to run predefined tests (they call CS_demo.m)
+- [create_pictures.m](./create_pictures.m), [demonstrateSparsity.m](./demonstrateSparsity.m) and [test_f_factors.m](./test_f_factors.m): scripts to run predefined tests (they call CS_demo.m)
 - [CS_demo.m](./CS_demo.m): the main function of the project implementing CS
 - [printNorms.m](./printNorms.m): a utility to print norms of a vector/matrix to the console
 - [showImages.m](./showImages.m): creates a figure to show before/after images
@@ -17,7 +17,3 @@ A student project about compressed sensing.
 - One L1-optimization tool
   - *recommended:* The [l1-magic](https://candes.su.domains/software/l1magic/index.html) collection of matlab routines to solve convex optimization problems
   - The [cvx](https://cvxr.com/cvx/) library to solve the convex optimization problem
-
-
-# Known issues
-- In the current implementation $s$ does not appear to be sparse after the optimization.
