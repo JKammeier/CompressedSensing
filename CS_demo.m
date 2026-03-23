@@ -1,4 +1,4 @@
-function [difference_l2, s, resultImg] = CS_demo(pFactor, C_version, C_probability, Psi_version, Optimization_version, Show_C_matrix, Show_s_histogram, fileNameEnd, sparsityCutoff)
+function [difference_l2, s, resultImg] = CS_demo(pFactor, C_version, C_probability, Psi_version, Optimization_version, Show_C_matrix, Show_s_histogram, fileNameEnd, sparsityCutoff, image)
     % pFactor - p = n*pFactor (Factor between original image vector length n and number of CS measurements p)
     % C_version - 0: Set prob. for each element to be one; 1: one random one per row; 2: roughly identity matrix
     % C_probability - Probability used in C creation
@@ -9,10 +9,16 @@ function [difference_l2, s, resultImg] = CS_demo(pFactor, C_version, C_probabili
     % fileNameEnd - a suffix added to the filename (before the extension)
     % sparsityCutoff - Absolute values lower than this will be set to 0 in
     %                   s
+    % image - the image that will be used as an example; set to 0 to
+    %               use default "cameraman"
 
     %% Preprocess image and prepare demo
-    img = imread("cameraman.tif");
-    img = imresize(img,0.25);    % downsample image to remove memory constraints
+    if image
+        img = image;
+    else
+        img = imread("cameraman.tif");
+        img = imresize(img,0.25);    % downsample image to remove memory constraints
+    end
     x_original = img(:);    % This is now ground truth (img: matrix, x_original: vector)
     
     % Define variables

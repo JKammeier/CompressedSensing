@@ -2,7 +2,7 @@
 %% Set parameters
 numberOfRuns = 1; % number of runs to average
 
-%pFactor = 0.5;
+%f = 0.5;
 C_version = 0;
 C_probability = 0.5;
 Psi_version = 0;
@@ -11,7 +11,7 @@ Show_C_matrix = false;
 Show_s_histogram = false;
 fileNameEnd = "f_";
 sparsityCutoff = 1;
-% f = 0.3;
+custom_image = 0;
 
 globalResultFigure = figure;
 hold on;
@@ -26,7 +26,7 @@ for pIndex = 1:length(f)
     differenceValuesRaw = zeros(1, numberOfRuns);
     s_l0_Raw =zeros(1, numberOfRuns);
     for run = 1:numberOfRuns
-       [differenceValuesRaw(run), s_DCT, ~] = CS_demo(f(pIndex), C_version, C_probability, Psi_version, Optimization_version, Show_C_matrix, Show_s_histogram, strcat(fileNameEnd, string(f(pIndex))), sparsityCutoff);
+       [differenceValuesRaw(run), s_DCT, ~] = CS_demo(f(pIndex), C_version, C_probability, Psi_version, Optimization_version, Show_C_matrix, Show_s_histogram, strcat(fileNameEnd, string(f(pIndex))), sparsityCutoff, custom_image);
         s_l0_Raw(run) = nnz(s_DCT) / numel(s_DCT);
     end
     distanceValues_DCT(pIndex) = mean(differenceValuesRaw);

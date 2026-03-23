@@ -7,5 +7,6 @@ Show_C_matrix = true;
 Show_s_histogram = true;
 fileNameEnd = "SparsityTest";
 sparsityCutoff = 1;
+custom_image = 0;
 
-[~, s, ~] = CS_demo(pFactor, C_version, C_probability, Psi_version, Optimization_version, Show_C_matrix, Show_s_histogram, fileNameEnd, sparsityCutoff);
+[~, s, ~] = CS_demo(pFactor, C_version, C_probability, Psi_version, Optimization_version, Show_C_matrix, Show_s_histogram, fileNameEnd, sparsityCutoff, custom_image);
