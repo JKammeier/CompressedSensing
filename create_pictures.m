@@ -10,6 +10,7 @@ Show_C_matrix = false;
 Show_s_histogram = false;
 fileNameEnd = "images_";
 sparsityCutoff = 1;
+custom_image = 0;
 
 globalResultFigure = figure;
 hold on;
@@ -26,7 +27,7 @@ imshow(img);
 title("Ground truth");
 
 for pIndex = 1:length(f)
-    [~, ~, resultImg] = CS_demo(f(pIndex), C_version, C_probability, Psi_version, Optimization_version, Show_C_matrix, Show_s_histogram, strcat(fileNameEnd, string(f(pIndex))), sparsityCutoff);
+    [~, ~, resultImg] = CS_demo(f(pIndex), C_version, C_probability, Psi_version, Optimization_version, Show_C_matrix, Show_s_histogram, strcat(fileNameEnd, string(f(pIndex))), sparsityCutoff, custom_image);
     
     figure(globalResultFigure);
     subplot(2,2,pIndex+1);

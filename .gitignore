@@ -2,3 +2,5 @@
 *.mat
 test.m
 *.asv
+*.jpg
+*.png
