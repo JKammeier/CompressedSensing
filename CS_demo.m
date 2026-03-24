@@ -13,11 +13,11 @@ function [difference_l2, s, resultImg] = CS_demo(pFactor, C_version, C_probabili
     %               use default "cameraman"
 
     %% Preprocess image and prepare demo
-    if image
-        img = image;
-    else
+    if isscalar(image) && image == 0
         img = imread("cameraman.tif");
         img = imresize(img,0.25);    % downsample image to remove memory constraints
+    else
+        img = image;
     end
     x_original = img(:);    % This is now ground truth (img: matrix, x_original: vector)
     
