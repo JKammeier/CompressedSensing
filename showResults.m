@@ -1,5 +1,5 @@
 %% Load .mat file
-load('results_example.mat');
+load('results/results_example.mat');
 
 resultImg = reshape(x_hat,size(img));
 
